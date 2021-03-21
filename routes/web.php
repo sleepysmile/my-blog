@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\SIngInController;
+use App\Http\Controllers\Admin\DefaultController;
+use App\Http\Controllers\Admin\SingInController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin/index');
-});
+//Route::get('/', function () {
+//    return view('admin/index');
+//});
 
-Route::get('/', [SIngInController::class, 'index']);
+Route::get('/admin', [DefaultController::class, 'index']);
+
+Route::get('/', [SingInController::class, 'index']);
+Route::post('sing-in/login', [SingInController::class, 'login']);

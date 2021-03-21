@@ -1,5 +1,5 @@
-@extends('admin.layouts.main');
-@section('content');
+@extends('admin.layouts.main')
+@section('content')
 <!-- Begin Page Content -->
 
 <!-- Page Heading -->
@@ -328,4 +328,4 @@
 </div>
 
 
-@stop;
+@stop

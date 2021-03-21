@@ -6,9 +6,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-class SIngInController extends Controller
+class DefaultController extends \Illuminate\Routing\Controller
 {
     public function index() {
-        return view('admin/sing-in/index');
+        return view('admin.default.index');
     }
 }
