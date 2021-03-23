@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
  */
 class Publication extends Model
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
 
     protected $table = 'publication';
