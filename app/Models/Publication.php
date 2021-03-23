@@ -39,4 +39,15 @@ class Publication extends Model
         });
     }
 
+    public function setImageAttribute($value)
+    {
+        $attributeName = 'image';
+        $disk = 'public';
+        $destination_path = 'publications';
+
+        $this->uploadFileToDisk($value, $attributeName, $disk, $destination_path);
+
+         return $this->attributes[$attributeName];
+    }
+
 }
