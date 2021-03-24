@@ -8,6 +8,9 @@ namespace App\Traits;
  */
 trait InstanceTrait
 {
+    /**
+     * @return static
+     */
     public static function instance()
     {
         return new static();

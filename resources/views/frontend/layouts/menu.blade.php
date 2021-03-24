@@ -1,11 +1,7 @@
-@php
-
-@endphp
-
-
 {!!
     \App\Widgets\Menu::instance()
         ->setIsActiveRequest(true)
+        ->setIsChildActive(true)
         ->setWrapTemplate('<ul class="header__nav">{items}</ul>')
         ->setActiveClass('current')
         ->add(new \App\Widgets\MenuItem('Home', 'frontend.home.index'))

@@ -1,25 +1,48 @@
 <?php
 
-
 namespace App\Widgets;
-
 
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Class MenuItem
+ *
+ * Класс представляющий элемент меню
+ * @package App\Widgets
+ */
 class MenuItem
 {
+    /** @var string - Текст в эл. меню */
     public string $label = '';
 
+    /** @var bool - Активный ли элемент меню */
     public bool $active = false;
 
-    public string $activeClass = '';
+    /** @var string - класс активного элемента */
+    protected static string $activeClass = '';
 
-    public string $childrenClass = '';
+    /** @var string - класс списка дочерних элеменна */
+    protected static string $childrenClass = '';
 
-    public string $itemTemplate = '';
+    /** @var string - шаблон формирования одного элемента списка */
+    protected static string $itemTemplate = '';
 
-    public string $subItemTemplate = '';
+    /** @var string - шаблон формирования подменю */
+    protected static string $subItemTemplate = '';
 
+    /** @var bool - делать ли проверку на активный элемент с url-ом */
+    protected static bool $isActiveRequest = false;
+
+    /** @var bool - Отображать ли открытый список меню при активном наследнике */
+    protected static bool $isChildActive = false;
+
+    /** @var string - класс для открытия элемента меню */
+    protected static string $openClass = '';
+
+    /** @var string - класс для отображения субменю */
+    protected static string $showSubmenuClass = '';
+
+    /** @var string - ссылка формат route.name */
     protected string $url = '';
 
     /**
@@ -27,19 +50,96 @@ class MenuItem
      */
     protected array $childItems = [];
 
-    public bool $isActiveRequest = false;
-
     public function __construct(string $label, string $route, array $childItems = [], bool $active = false)
     {
         $this->label = $label;
         $this->url = $route;
         $this->childItems = $childItems;
 
-        if ($this->isActiveRequest) {
+        if (self::$isActiveRequest) {
             $this->active = $active;
         } else {
             $this->active = $this->isActive();
         }
+    }
+
+    /**
+     * Проверка аткивного элемента в соттвествии с url-ом
+     *
+     * @return bool
+     */
+    protected function isActive(): bool
+    {
+        return (bool)(Route::currentRouteName() === $this->url);
+    }
+
+    /**
+     * @param string $showSubmenuClass
+     * @return MenuItem
+     */
+    public function setShowSubmenuClass(string $showSubmenuClass): self
+    {
+        self::$showSubmenuClass = $showSubmenuClass;
+        return $this;
+    }
+
+    /**
+     * @param string $openClass
+     * @return MenuItem
+     */
+    public function setOpenClass(string $openClass): self
+    {
+        self::$openClass = $openClass;
+        return $this;
+    }
+
+    /**
+     * @param string $activeClass
+     * @return MenuItem
+     */
+    public function setActiveClass(string $activeClass): self
+    {
+        self::$activeClass = $activeClass;
+        return $this;
+    }
+
+    /**
+     * @param string $childrenClass
+     * @return MenuItem
+     */
+    public function setChildrenClass(string $childrenClass): self
+    {
+        self::$childrenClass = $childrenClass;
+        return $this;
+    }
+
+    /**
+     * @param bool $isChildActive
+     */
+    public function setIsChildActive(bool $isChildActive): self
+    {
+        self::$isChildActive = $isChildActive;
+        return $this;
+    }
+
+    /**
+     * @param string $subItemTemplate
+     * @return MenuItem
+     */
+    public function setSubItemTemplate(string $subItemTemplate): self
+    {
+        self::$subItemTemplate = $subItemTemplate;
+        return $this;
+    }
+
+    /**
+     * @param string $itemTemplate
+     * @return MenuItem
+     */
+    public function setItemTemplate(string $itemTemplate): self
+    {
+        self::$itemTemplate = $itemTemplate;
+        return $this;
     }
 
     /**
@@ -48,15 +148,9 @@ class MenuItem
      */
     public function setIsActiveRequest(bool $isActiveRequest): self
     {
-        $this->isActiveRequest = $isActiveRequest;
+        self::$isActiveRequest = $isActiveRequest;
 
         return $this;
-    }
-
-
-    protected function isActive(): bool
-    {
-        return (bool)(Route::currentRouteName() === $this->url);
     }
 
     /**
@@ -72,76 +166,61 @@ class MenuItem
     }
 
     /**
-     * @param string $itemTemplate
-     * @return MenuItem
+     * @return string
      */
-    public function setItemTemplate(string $itemTemplate): self
+    protected function getSubmenuClass()
     {
-        $this->itemTemplate = $itemTemplate;
-        return $this;
+        return self::$showSubmenuClass ? 'class="' . self::$showSubmenuClass. '"' : 'style="display: block"';
     }
 
+    /**
+     * Внешняя функция рендеринга элементов меню
+     *
+     * @return string
+     */
     public function render()
     {
         return self::internalRender($this);
     }
 
+    /**
+     * Внутренний рекурсивный рендеринг элементов меню
+     *
+     * @param MenuItem $item
+     * @return string
+     */
     protected static function internalRender(MenuItem $item): string
     {
+        $subItemActive = false;
         $subMenu = '';
         if ($item->hasChild()) {
             $subMenuItems = '';
             foreach ($item->childItems as $childItem) {
                 $subMenuItems .= self::internalRender($childItem);
+                $subItemActive = $childItem->isActive();
             }
-
-            $subMenu = strtr($item->subItemTemplate, [
-                '{items}' => $subMenuItems
+            $subMenu = strtr(self::$subItemTemplate, [
+                '{items}' => $subMenuItems,
+                '{showSubmenuClass}' => $subItemActive ? $item->getSubmenuClass() : '',
             ]);
         }
 
-        return strtr($item->itemTemplate, [
-            '{active}' => $item->active ? $item->activeClass : '',
-            '{children}' => $item->hasChild() ? $item->childrenClass : '',
+        return strtr(self::$itemTemplate, [
+            '{active}' => $item->active ? self::$activeClass : '',
+            '{children}' => $item->hasChild() ? self::$childrenClass : '',
             '{label}' => $item->label,
             '{url}' => $item->getUrlRoute(),
-            '{subItem}' => $subMenu
+            '{subItem}' => $subMenu,
+            '{openClass}' => $subItemActive ? self::$openClass : '',
         ]);
     }
 
     /**
-     * @param string $activeClass
-     * @return MenuItem
+     * @return bool
      */
-    public function setActiveClass(string $activeClass): self
-    {
-        $this->activeClass = $activeClass;
-        return $this;
-    }
-
-    /**
-     * @param string $childrenClass
-     * @return MenuItem
-     */
-    public function setChildrenClass(string $childrenClass): self
-    {
-        $this->childrenClass = $childrenClass;
-        return $this;
-    }
-
     protected function hasChild(): bool
     {
         return (bool)($this->childItems !== []);
-    }
-
-    /**
-     * @param string $subItemTemplate
-     * @return MenuItem
-     */
-    public function setSubItemTemplate(string $subItemTemplate): self
-    {
-        $this->subItemTemplate = $subItemTemplate;
-        return $this;
     }
 
 }

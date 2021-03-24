@@ -10,6 +10,8 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+docker/mysql/*
+public/storage
 
 .idea
 /nbproject/private/
