@@ -5,7 +5,7 @@
         ->setWrapTemplate('<ul class="header__nav">{items}</ul>')
         ->setActiveClass('current')
         ->add(new \App\Widgets\MenuItem('Home', 'frontend.home.index'))
-        ->add(new \App\Widgets\MenuItem('Categories', '#0', [
+        ->add(new \App\Widgets\MenuItem('Tags', '#0', [
             new \App\Widgets\MenuItem('Lifestyle', '#'),
             new \App\Widgets\MenuItem('Health', '#'),
             new \App\Widgets\MenuItem('Family', '#'),

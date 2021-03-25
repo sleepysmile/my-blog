@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\PublicationRequest;
+use App\Http\Requests\TagsRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class PublicationCrudController
+ * Class TagsCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class PublicationCrudController extends CrudController
+class TagsCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -26,9 +26,9 @@ class PublicationCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Publication::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/publication');
-        CRUD::setEntityNameStrings('publication', 'publications');
+        CRUD::setModel(\App\Models\Tags::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/tags');
+        CRUD::setEntityNameStrings('tags', 'tags');
     }
 
     /**
@@ -39,9 +39,7 @@ class PublicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('title');
-        CRUD::column('text');
-        CRUD::column('published');
+        CRUD::column('name');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -58,24 +56,16 @@ class PublicationCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(PublicationRequest::class);
+        CRUD::setValidation(TagsRequest::class);
 
+        CRUD::field('name');
         $this->crud->addField([
-            'name'      => 'image',
-            'label'     => 'Image',
-            'type'      => 'upload',
-            'upload'    => true,
-            'disk'      => 'public',
-        ]);
-        CRUD::field('title');
-        CRUD::field('text');
-        CRUD::field('published');
-        $this->crud->addField([
-            'type' => 'select2_multiple',
-            'name' => 'tags', // the relationship name in your Model
-            'entity' => 'tags', // the relationship name in your Model
-            'attribute' => 'name', // attribute on Article that is shown to admin
-//            'pivot' => true, //  on create&update, do you need to add/delete pivot table entries?
+            'name' => 'popular',
+            'type' => 'select_from_array',
+            'options' => [
+                true => 'Popular',
+                false => 'Unpopular',
+            ]
         ]);
 
         /**
@@ -95,21 +85,4 @@ class PublicationCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
-
-    protected function setupShowOperation()
-    {
-        $crud = $this->crud;
-
-        $crud->addField([
-            'name' => 'image',
-            'label' => 'Image',
-            'type' => 'image',
-            'disk' => 'public',
-        ]);
-        CRUD::column('image');
-        CRUD::column('title');
-        CRUD::column('text');
-        CRUD::column('published');
-    }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -18,7 +19,7 @@ use Illuminate\Support\Str;
  */
 class Publication extends Model
 {
-    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
+    use CrudTrait;
     use HasFactory;
 
     protected $table = 'publication';
@@ -30,15 +31,6 @@ class Publication extends Model
         'image',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (Publication $model) {
-            $model->slug = Str::slug($model->title);
-        });
-    }
-
     public function setImageAttribute($value)
     {
         $attributeName = 'image';
@@ -48,6 +40,15 @@ class Publication extends Model
         $this->uploadFileToDisk($value, $attributeName, $disk, $destination_path);
 
          return $this->attributes[$attributeName];
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tags::class,
+            'publications_to_tags',
+            'publication_id',
+            'tag_id'
+        );
     }
 
 }

@@ -18,4 +18,6 @@ Route::name('frontend.')
     ->group(function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home.index');
+        Route::get('/{tag}', [HomeController::class, 'tag'])
+            ->name('home.tag');
     });
