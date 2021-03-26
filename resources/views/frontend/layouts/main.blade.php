@@ -11,13 +11,13 @@
     @include('frontend.layouts.styles')
 </head>
 <body>
-{{--    <div id="preloader">--}}
-{{--        <div id="loader" class="dots-fade">--}}
-{{--            <div></div>--}}
-{{--            <div></div>--}}
-{{--            <div></div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 
     <div id="top" class="s-wrap site-wrapper">
 
