@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->singleton(\App\Singletons\SettingsManager::SINGLETON_NAME, function ($app) {
+    return \App\Singletons\SettingsManager::instance();
+});
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

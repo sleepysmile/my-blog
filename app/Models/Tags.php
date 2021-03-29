@@ -5,7 +5,6 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 /**
  * Class Tags
@@ -20,27 +19,22 @@ class Tags extends Model
     use CrudTrait;
     use HasFactory;
 
+    /**
+     * @var string
+     */
     protected $table = 'tags';
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'popular'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (Tags $model) {
-            $model->slug = Str::slug($model->name);
-        });
-        static::updated(function (Tags $model) {
-            if ($model->slug === '') {
-                $model->slug = Str::slug($model->name);
-            }
-        });
-    }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function publication()
     {
         return $this->belongsToMany(Publication::class,
