@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Frontend\CommentController;
 use App\Http\Controllers\Frontend\HomeController;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,15 @@ Route::name('frontend.')
     ->group(function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home.index');
-        Route::get('/{tag}', [HomeController::class, 'tag'])
+        Route::get('/{slug}', [HomeController::class, 'tag'])
             ->name('home.tag');
+        Route::get('/publication/{slug}', [HomeController::class, 'publicationView'])
+            ->name('home.publication.view');
+
+        Route::get('comment/crate', function () {
+            throw new BadRequestHttpException();
+        });
+        Route::post('comment/crate', [CommentController::class, 'create'])
+            ->name('comment.create');
+
     });

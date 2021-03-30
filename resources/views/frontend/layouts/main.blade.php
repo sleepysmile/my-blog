@@ -25,7 +25,7 @@
 
         <div class="s-content">
 
-            {{-- @yield('content') --}}
+             @yield('content')
 
         </div>
 
