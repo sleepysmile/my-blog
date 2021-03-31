@@ -12,21 +12,9 @@ use Illuminate\Support\Str;
  * Class PublicationObserver
  * @package App\Observers
  *
- * @property null|User $user
  */
-class PublicationObserver
+class PublicationObserver extends BaseObserver
 {
-    /** @var User|null  */
-    private ?User $user;
-
-    public function __construct()
-    {
-        $user = Auth::guard('web')->user() !== null
-            ? Auth::guard('web')->user()
-            : Auth::guard('backpack')->user();
-        $this->user = $user;
-    }
-
     /**
      * Handle the Publication "created" event.
      *
@@ -56,14 +44,6 @@ class PublicationObserver
         if ($this->isUser()) {
             $publication->updated_by = $this->user->getAuthIdentifier();
         }
-    }
-
-    /**
-     * @return bool
-     */
-    private function isUser()
-    {
-        return ($this->user !== null);
     }
 
 }

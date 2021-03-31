@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Comment
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $owner_id
  * @property integer $created_by
  * @property integer $updated_by
+ * @property integer $parent_id
  * @property string $name
  * @property string $email
  * @property string $website
@@ -21,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $owner_name
  * @property DateTime $created_at
  * @property DateTime $updated_at
+ *
+ * @property Collection $children
  */
 class Comment extends Model
 {
@@ -47,5 +52,29 @@ class Comment extends Model
         'email',
         'website',
         'message',
+        'owner_name',
+        'owner_id',
+        'parent_id',
     ];
+
+    /**
+     * @return BelongsToMany
+     */
+    public function children()
+    {
+        return $this->hasMany(
+            static::class,
+            'parent_id',
+            'id',
+        );
+    }
+
+    /**
+     * @param string $format
+     * @return mixed
+     */
+    public function getCreateDate(string $format = 'M d, Y')
+    {
+        return $this->created_at->format($format);
+    }
 }

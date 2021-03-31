@@ -27,6 +27,7 @@ class Menu extends Component
             ->groupBy([
                 'publications_to_tags.tag_id'
             ])
+            ->orderBy('tags.id', 'desc')
             ->get();
 
         return view('components.widgets.menu', [

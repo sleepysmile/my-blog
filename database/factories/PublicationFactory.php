@@ -25,6 +25,8 @@ class PublicationFactory extends Factory
             'title' => $this->faker->title,
             'text' => $this->faker->text(100),
             'published' => $this->faker->boolean,
+            'created_by' => rand(1, 2),
+            'updated_by' => rand(1, 2)
         ];
     }
 }

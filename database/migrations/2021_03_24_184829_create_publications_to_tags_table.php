@@ -44,8 +44,8 @@ class CreatePublicationsToTagsTable extends Migration
     public function down()
     {
         Schema::table('publications_to_tags', function (Blueprint $table) {
-            $table->dropForeign('tag_id');
-            $table->dropForeign('publication_id');
+            $table->dropForeign('publications_to_tags_tag_id_foreign');
+            $table->dropForeign('publications_to_tags_publication_id_foreign');
         });
         Schema::dropIfExists('publications_to_tags');
     }

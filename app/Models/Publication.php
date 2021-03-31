@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CommentTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,11 +27,13 @@ use Illuminate\Support\Str;
  *
  * @property null|User $author
  * @property null|Tags[] $tags
+ * @property null|Comment[] $comments
  */
 class Publication extends Model
 {
     use CrudTrait;
     use HasFactory;
+    use CommentTrait;
 
     /**
      * @var string

@@ -13,7 +13,15 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('frontend.home.index');
+        $publications = Publication::query()
+            ->select([
+                'publication.*'
+            ])
+            ->paginate(12);
+
+        return view('frontend.home.index', [
+            'publications' => $publications
+        ]);
     }
 
     public function tag(string $slug, Request $request)
@@ -25,7 +33,7 @@ class HomeController extends Controller
             ->leftJoin('publications_to_tags', 'publication.id', '=', 'publications_to_tags.publication_id')
             ->leftJoin('tags', 'publications_to_tags.tag_id', '=', 'tags.id')
             ->where('tags.slug', $slug)
-            ->paginate(10);
+            ->paginate(12);
         $tag = Tags::query()
             ->where('slug', $slug)
             ->first();
