@@ -151,6 +151,7 @@
                       action="{{ route('frontend.comment.create') }}"
                       autocomplete="off"
                       data-error-box=".js-errorBox"
+                      data-ajax-container="#commentAjaxContainer"
                 >
                     <div class="alert-box alert-box--error hideit js-errorBox" style="display: none">
                         <i class="fa fa-times alert-box__close" aria-hidden="true"></i>

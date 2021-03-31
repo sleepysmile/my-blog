@@ -5,7 +5,9 @@ $(document).ready(function () {
     $(document).on('submit', formSelector, function (event) {
         event.preventDefault();
         var self = $(this);
+        var ajaxSelector = self.data('ajax-container');
         var errorContainer = self.find(self.data('error-box'));
+        var ajaxContainer = self.find(ajaxSelector);
         var formButton = self.find('button');
 
         if (errorContainer.length !== 0) {
@@ -27,7 +29,9 @@ $(document).ready(function () {
             success: function (data) {
                 self[0].reset();
 
-                $('#commentAjaxContainer').load(' #commentAjaxContainer > *')
+                if (ajaxContainer.length !== 0) {
+                    ajaxContainer.load(' ' + ajaxSelector + ' > *')
+                }
             },
             error: function (request, status, error) {
                 var responseJson = JSON.parse(request.responseText);
