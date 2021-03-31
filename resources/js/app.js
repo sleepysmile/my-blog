@@ -7,7 +7,7 @@ $(document).ready(function () {
         var self = $(this);
         var ajaxSelector = self.data('ajax-container');
         var errorContainer = self.find(self.data('error-box'));
-        var ajaxContainer = self.find(ajaxSelector);
+        var ajaxContainer = $(ajaxSelector);
         var formButton = self.find('button');
 
         if (errorContainer.length !== 0) {

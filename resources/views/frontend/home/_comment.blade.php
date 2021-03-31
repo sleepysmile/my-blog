@@ -9,8 +9,7 @@ $isChildren = !$comment->children->isEmpty();
 <li class="comment {{ ($isChildren && $comment->parent_id === null) ? 'thread-alt' : '' }}">
 
     <div class="comment__avatar">
-        <p style="width: 50px; height: 50px;"></p>
-        {{--                            <img class="avatar" src="images/avatars/user-01.jpg" alt="" width="50" height="50">--}}
+        <img class="avatar" src="{{ $comment->getUserAvatar() }}" alt="" >
     </div>
 
     <div class="comment__content">

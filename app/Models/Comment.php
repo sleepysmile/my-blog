@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Comment
@@ -58,9 +58,9 @@ class Comment extends Model
     ];
 
     /**
-     * @return BelongsToMany
+     * @return HasMany
      */
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(
             static::class,
@@ -77,4 +77,13 @@ class Comment extends Model
     {
         return $this->created_at->format($format);
     }
+
+    /**
+     * @return string
+     */
+    public function getUserAvatar(): string
+    {
+        return asset('assets/frontend/images/avatars/no-avatar.png');
+    }
+
 }
