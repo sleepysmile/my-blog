@@ -36,8 +36,8 @@ $(document).ready(function () {
             error: function (request, status, error) {
                 var responseJson = JSON.parse(request.responseText);
                 var errors = responseJson.errors
-
-                if (errors.length !== 0 && self.data('error-box')) {
+                console.log('errors', errors);
+                if (errors !== undefined && self.data('error-box')) {
                     errorContainer.show();
 
                     Object.values(errors).forEach(function callback(currentValue, index, array) {

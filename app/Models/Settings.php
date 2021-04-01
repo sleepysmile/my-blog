@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Interfaces\SettingsInterface;
+use App\Traits\InstanceTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -14,16 +16,24 @@ use Illuminate\Support\Facades\Log;
  * @property string $option_name
  * @property string $option_value
  * @property string $option_type
- * @property bool $is_internal
  */
 class Settings extends Model implements SettingsInterface
 {
     use HasFactory;
+    use InstanceTrait;
+    use CrudTrait;
 
     /**
      * @var string
      */
     protected $table = 'settings';
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * @var string[]
@@ -32,7 +42,6 @@ class Settings extends Model implements SettingsInterface
         'option_name',
         'option_value',
         'option_type',
-        'is_internal',
     ];
 
     /**

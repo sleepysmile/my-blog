@@ -7,10 +7,18 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Publication;
 use App\Models\Tags;
+use App\Singletons\SettingsManager;
 use Illuminate\Support\Facades\Request;
 
 class HomeController extends Controller
 {
+    public SettingsManager $settings;
+
+    public function __construct()
+    {
+        $this->settings = app()->get(SettingsManager::SINGLETON_NAME);
+    }
+
     public function index()
     {
         $publications = Publication::query()
@@ -55,4 +63,19 @@ class HomeController extends Controller
             'publication' => $publication
         ]);
     }
+
+    public function about()
+    {
+        return view('frontend.home.about', [
+            'text' => $this->settings->get('about.text')
+        ]);
+    }
+
+    public function contact()
+    {
+        return view('frontend.home.contact', [
+            'text' => $this->settings->get('contact.text')
+        ]);
+    }
+
 }

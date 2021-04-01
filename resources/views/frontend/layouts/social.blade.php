@@ -1,22 +1,50 @@
+@php
+
+    /** @var \App\Singletons\SettingsManager $settings */
+    $settings = app()->get(\App\Singletons\SettingsManager::SINGLETON_NAME)
+
+@endphp
+
 <ul class="header__social">
-    <li class="ss-facebook">
-        <a href="https://facebook.com/">
-            <span class="screen-reader-text">Facebook</span>
-        </a>
-    </li>
-    <li class="ss-twitter">
-        <a href="#0">
-            <span class="screen-reader-text">Twitter</span>
-        </a>
-    </li>
-    <li class="ss-dribbble">
-        <a href="#0">
-            <span class="screen-reader-text">Dribbble</span>
-        </a>
-    </li>
-    <li class="ss-pinterest">
-        <a href="#0">
-            <span class="screen-reader-text">Behance</span>
-        </a>
-    </li>
+
+    @if($settings->get('fb.link') !== '')
+
+        <li class="ss-facebook">
+            <a href="{{ $settings->get('fb.link') }}">
+                <span class="screen-reader-text">Facebook</span>
+            </a>
+        </li>
+
+    @endif
+
+    @if($settings->get('tw.link') !== '')
+
+        <li class="ss-facebook">
+            <a href="{{ $settings->get('tw.link') }}">
+                <span class="screen-reader-text">Twitter</span>
+            </a>
+        </li>
+
+    @endif
+
+    @if($settings->get('bs.link') !== '')
+
+        <li class="ss-facebook">
+            <a href="{{ $settings->get('bs.link') }}">
+                <span class="screen-reader-text">Dribbble</span>
+            </a>
+        </li>
+
+    @endif
+
+    @if($settings->get('pa.link') !== '')
+
+        <li class="ss-facebook">
+            <a href="{{ $settings->get('pa.link') }}">
+                <span class="screen-reader-text">Behance</span>
+            </a>
+        </li>
+
+    @endif
+
 </ul>

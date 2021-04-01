@@ -15,12 +15,12 @@
         </ul>
     </li>
     <li>
-        <a href="page-about.html" title="">
+        <a href="{{ route('frontend.home.about') }}" title="">
             About
         </a>
     </li>
     <li>
-        <a href="page-contact.html" title="">
+        <a href="{{ route('frontend.home.contact') }}" title="">
             Contact
         </a>
     </li>

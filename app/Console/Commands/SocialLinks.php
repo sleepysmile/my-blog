@@ -36,6 +36,7 @@ class SocialLinks extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function handle()
     {
@@ -57,11 +58,12 @@ class SocialLinks extends Command
                 'option_type' => 'string'
             ],
         ];
+
         /** @var SettingsManager $settingsManager */
         $settingsManager = app()->get(SettingsManager::SINGLETON_NAME);
 
         foreach ($links as $link) {
-            $settingsManager->set($link['option_name'], '', $link['option_type']);
+            $settingsManager->set($link['option_name'], '', $link['option_type'], false);
         }
 
         return 0;
