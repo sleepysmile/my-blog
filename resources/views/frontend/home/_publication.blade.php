@@ -38,7 +38,7 @@
 
                 </span>
                 <span class="entry__meta-date">
-                    <a href="single-standard.html">{{ $publication->getCreateDate() }}</a>
+                    <a href="{{ route('frontend.home.publication.view', ['slug' => $publication->slug]) }}">{{ $publication->getCreateDate() }}</a>
                 </span>
             </div>
         </div>

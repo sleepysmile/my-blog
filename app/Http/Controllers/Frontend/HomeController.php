@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Frontend;
 
 
 use App\Http\Controllers\Controller;
+use App\Managers\PublicationCacheManager;
 use App\Models\Publication;
 use App\Models\Tags;
 use App\Singletons\SettingsManager;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -19,12 +22,15 @@ class HomeController extends Controller
         $this->settings = app()->get(SettingsManager::SINGLETON_NAME);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $publications = Publication::query()
             ->select([
-                'publication.*'
+                'publication.*',
             ])
+            ->cacheFor(PublicationCacheManager::CACHE_TIME)
+            ->cacheTags([PublicationCacheManager::$homeCache])
+            ->orderBy('id', 'desc')
             ->paginate(12);
 
         return view('frontend.home.index', [

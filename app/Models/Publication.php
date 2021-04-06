@@ -2,19 +2,26 @@
 
 namespace App\Models;
 
+use App\Interfaces\ImageContract;
+use App\Managers\PublicationCacheManager;
+use App\Managers\ResizeManager;
 use App\Traits\CommentTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 /**
  * Class Publication
  * @package App\Models
  *
+ * @property integer $id
  * @property string $title
  * @property string $slug
  * @property string $text
@@ -29,11 +36,36 @@ use Illuminate\Support\Str;
  * @property null|Tags[] $tags
  * @property null|Comment[] $comments
  */
-class Publication extends Model
+class Publication extends Model implements ImageContract
 {
     use CrudTrait;
     use HasFactory;
     use CommentTrait;
+    use QueryCacheable;
+
+    // CACHE CONFIGURE
+    public $cacheFor = 3600 * 60;
+
+    protected static $flushCacheOnUpdate = true;
+
+    // IMAGE SIZES
+    protected const SQUARE_SIZE = '200x200';
+
+    protected const SMALL_SIZE = '120x100';
+
+    protected const ORIGINAL_SIZE = 'original';
+
+    protected ResizeManager $resizeManager;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->resizeManager = ResizeManager::instance()
+            ->setModel($this)
+            ->setStorage($this->getStorage())
+            ->setImageManager(new ImageManager(['driver' => 'gd']))
+            ->setPath('publication/');
+    }
 
     /**
      * @var string
@@ -81,16 +113,15 @@ class Publication extends Model
     /**
      * @param $value
      * @return mixed
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function setImageAttribute($value)
     {
-        $attributeName = 'image';
-        $disk = 'public';
-        $destination_path = 'publications';
+        $file = request()->file('image');
+        $path = $this->resizeManager
+            ->save($file);
 
-        $this->uploadFileToDisk($value, $attributeName, $disk, $destination_path);
-
-        return $this->attributes[$attributeName];
+        return $this->attributes['image'] = $path;
     }
 
     /**
@@ -116,12 +147,34 @@ class Publication extends Model
      */
     public function getImagePath(): string
     {
-        $disk = Storage::disk('public');
-        if ($disk->exists($this->image)) {
-            $disk->get($this->image);
-        }
-
-        return '';
+        return $this->resizeManager->getPathByStorage($this->image);
     }
 
+    public function sizes(): array
+    {
+        return [
+            self::SQUARE_SIZE => [
+                'width' => 200,
+                'height' => 200
+            ],
+            self::SMALL_SIZE => [
+                'width' => 120,
+                'height' => 100
+            ],
+            '' => [
+                'width' => false,
+                'height' => false
+            ]
+        ];
+    }
+
+    public function uniqueDirName(): string
+    {
+        return 'publications/';
+    }
+
+    public function getStorage()
+    {
+        return Storage::disk('public');
+    }
 }

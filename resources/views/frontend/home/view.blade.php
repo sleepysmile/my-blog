@@ -54,20 +54,25 @@
 
             {!! $publication->text !!}
 
-            <p class="entry__tags">
-                <span>Post Tags</span>
 
-                <span class="entry__tag-list">
+            @if($publication->tags()->exists())
 
-                    @foreach($publication->tags as $tag)
+                <p class="entry__tags">
+                    <span>Post Tags</span>
 
-                        <a href="{{ route('frontend.home.tag', ['slug' => $tag->slug]) }}">{{ $tag->name }}</a>
+                    <span class="entry__tag-list">
 
-                    @endforeach
+                        @foreach($publication->tags as $tag)
 
-                </span>
+                            <a href="{{ route('frontend.home.tag', ['slug' => $tag->slug]) }}">{{ $tag->name }}</a>
 
-            </p>
+                        @endforeach
+
+                    </span>
+
+                </p>
+
+            @endif
         </div>
 
 {{--    TODO        --}}

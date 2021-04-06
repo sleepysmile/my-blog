@@ -2,10 +2,12 @@
 
 namespace App\Observers;
 
+use App\Managers\PublicationCacheManager;
 use App\Models\Publication;
 use App\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
@@ -24,7 +26,6 @@ class PublicationObserver extends BaseObserver
     public function creating(Publication $publication)
     {
         $publication->slug = Str::slug($publication->title);
-
 
         if ($this->isUser()) {
             $publication->created_by = $this->user->getAuthIdentifier();

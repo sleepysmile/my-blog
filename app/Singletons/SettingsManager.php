@@ -91,7 +91,7 @@ class SettingsManager
 
         $settingsItem = $this->getModelByName($fieldName);
 
-        if ($settingsItem instanceof $this->settingsClass) {
+        if ($settingsItem !== null) {
             return $settingsItem->getValue();
         }
 
