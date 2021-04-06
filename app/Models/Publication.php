@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use App\Interfaces\ImageContract;
-use App\Managers\PublicationCacheManager;
 use App\Managers\ResizeManager;
 use App\Traits\CommentTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
+use Rennokki\QueryCache\Query\Builder;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
 /**
@@ -35,6 +35,8 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
  * @property null|User $author
  * @property null|Tags[] $tags
  * @property null|Comment[] $comments
+ *
+ * @method static Builder query()
  */
 class Publication extends Model implements ImageContract
 {
@@ -102,7 +104,7 @@ class Publication extends Model implements ImageContract
         );
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class,
             'created_by',
@@ -177,4 +179,11 @@ class Publication extends Model implements ImageContract
     {
         return Storage::disk('public');
     }
+
+    // SCOPES METHODS
+    public function scopePublished($query)
+    {
+        return $query->where('published', true);
+    }
+
 }

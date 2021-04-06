@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Frontend;
 
 
 use App\Http\Controllers\Controller;
+use App\Managers\BaseCacheManager;
 use App\Managers\PublicationCacheManager;
+use App\Managers\TagCacheManager;
 use App\Models\Publication;
 use App\Models\Tags;
 use App\Singletons\SettingsManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Rennokki\QueryCache\Query\Builder;
 
 class HomeController extends Controller
 {
@@ -19,7 +20,7 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->settings = app()->get(SettingsManager::SINGLETON_NAME);
+        $this->settings = \app()->get(SettingsManager::SINGLETON_NAME);
     }
 
     public function index(Request $request)
@@ -28,9 +29,16 @@ class HomeController extends Controller
             ->select([
                 'publication.*',
             ])
+            ->with(['tags' => function ($query) {
+                return $query
+                    ->cacheFor(TagCacheManager::CACHE_TIME)
+                    ->cacheTags(['tags:publication'])
+                    ->limit(2);
+            }])
             ->cacheFor(PublicationCacheManager::CACHE_TIME)
             ->cacheTags([PublicationCacheManager::$homeCache])
             ->orderBy('id', 'desc')
+            ->published()
             ->paginate(12);
 
         return view('frontend.home.index', [
@@ -61,8 +69,23 @@ class HomeController extends Controller
     public function publicationView(string $slug)
     {
         $publication = Publication::query()
+            ->cacheFor(PublicationCacheManager::CACHE_TIME)
+            ->cacheTags([PublicationCacheManager::$viewCache . $slug])
             ->where('slug', $slug)
             ->where('published', true)
+            ->with([
+                'tags' => function ($query) {
+                    return $query
+                        ->cacheFor(TagCacheManager::CACHE_TIME)
+                        ->cacheTags(['tags:publication'])
+                        ->limit(2);
+                },
+                'comments' => function ($query) {
+                    return $query
+                        ->cacheFor(TagCacheManager::CACHE_TIME)
+                        ->cacheTags(['comments:publication']);
+                },
+            ])
             ->first();
 
         return view('frontend.home.view', [

@@ -28,7 +28,7 @@
             <div class="entry__meta">
                 <span class="entry__meta-cat">
 
-                    @foreach($publication->tags()->limit(2)->get() as $tag)
+                    @foreach($publication->tags as $tag)
 
                         <a href="{{ route('frontend.home.tag', ['slug' => $tag->slug]) }}">
                             {{ $tag->name }}
