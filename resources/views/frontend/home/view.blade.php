@@ -18,10 +18,10 @@
 
             <div class="media-wrap entry__media">
                 <div class="entry__post-thumb">
-                    <img src="{{ $publication->getImagePath() }}"
-                         srcset="{{ $publication->getImagePath() }} 2000w,
-                                {{ $publication->getImagePath() }} 1000w,
-                                {{ $publication->getImagePath() }} 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                    <img src="{{ $publication->getImagePath(\App\Models\Publication::DETAIL_SIZE_MEDIUM) }}"
+                         srcset="{{ $publication->getImagePath(\App\Models\Publication::DETAIL_SIZE_LARGE) }} 2000w,
+                                {{ $publication->getImagePath(\App\Models\Publication::DETAIL_SIZE_MEDIUM) }} 1000w,
+                                {{ $publication->getImagePath(\App\Models\Publication::DETAIL_SIZE_SMALL) }} 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                 </div>
             </div>
 

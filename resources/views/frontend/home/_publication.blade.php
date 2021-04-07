@@ -11,8 +11,8 @@
 
             @if($publication->getImagePath() !== '')
 
-            <img src="{{ $publication->getImagePath() }}"
-                 srcset="{{ $publication->getImagePath() }} 1x, {{ $publication->getImagePath() }} 2x" alt="">
+            <img src="{{ $publication->getImagePath(\App\Models\Publication::SMALL_SIZE) }}"
+                 srcset="{{ $publication->getImagePath(\App\Models\Publication::SMALL_SIZE) }} 1x, {{ $publication->getImagePath(\App\Models\Publication::MEDIUM_SIZE) }} 2x" alt="">
 
             @endif
         </a>

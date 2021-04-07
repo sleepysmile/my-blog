@@ -53,22 +53,28 @@ class Publication extends Model implements ImageContract
     protected static $flushCacheOnUpdate = true;
 
     // IMAGE SIZES
-    protected const SQUARE_SIZE = '200x200';
+    public const MEDIUM_SIZE = '1200x1200';
 
-    protected const SMALL_SIZE = '120x100';
+    public const DETAIL_SIZE_SMALL = '500x500';
 
-    protected const ORIGINAL_SIZE = 'original';
+    public const DETAIL_SIZE_MEDIUM = '1000x1000';
 
-    protected ResizeManager $resizeManager;
+    public const DETAIL_SIZE_LARGE = '2000x2000';
+
+    public const SMALL_SIZE = '600x600';
+
+    public const ORIGINAL_SIZE = '';
+
+    protected ?ResizeManager $resizeManager = null;
 
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
         $this->resizeManager = ResizeManager::instance()
             ->setModel($this)
             ->setStorage($this->getStorage())
             ->setImageManager(new ImageManager(['driver' => 'gd']))
             ->setPath('publication/');
+        parent::__construct($attributes);
     }
 
     /**
@@ -146,24 +152,36 @@ class Publication extends Model implements ImageContract
     }
 
     /**
+     * @param string $size
      * @return string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function getImagePath(): string
+    public function getImagePath(string $size = ''): string
     {
-        return $this->resizeManager->getPathByStorage($this->image);
+        return $this->resizeManager->getPathByStorage($this->image, $size);
     }
 
     public function sizes(): array
     {
         return [
-            self::SQUARE_SIZE => [
-                'width' => 200,
-                'height' => 200
+            self::MEDIUM_SIZE => [
+                'width' => 1200,
+                'height' => 1200
             ],
             self::SMALL_SIZE => [
-                'width' => 120,
-                'height' => 100
+                'width' => 600,
+                'height' => 600
+            ],
+            self::DETAIL_SIZE_SMALL => [
+                'width' => 500,
+                'height' => 500
+            ],
+            self::DETAIL_SIZE_MEDIUM => [
+                'width' => 1000,
+                'height' => 1000
+            ],
+            self::DETAIL_SIZE_LARGE => [
+                'width' => 2000,
+                'height' => 2000
             ],
             '' => [
                 'width' => false,
