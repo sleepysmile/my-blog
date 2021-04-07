@@ -78,6 +78,7 @@ class ResizeManager
             $this->storage->makeDirectory($this->path);
         }
         $uniqueName = uniqid();
+        $filePath = '';
 
         foreach ($this->model->sizes() as $name => $size) {
 
@@ -89,7 +90,7 @@ class ResizeManager
             }
 
             $filePath = $this->path . $this->getSizeName($uniqueName . '.' . $file->getClientOriginalExtension(),  $name);
-            $image->save($this->storage->path($filePath));
+            $image->save($this->storage->path($filePath), 80);
         }
 
         return $filePath;
