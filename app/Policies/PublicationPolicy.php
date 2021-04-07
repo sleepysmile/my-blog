@@ -6,34 +6,10 @@ use App\Models\Publication;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublicationPolicy
 {
-    use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Publication  $publication
-     * @return mixed
-     */
-    public function view(User $user, Publication $publication)
-    {
-        //
-    }
-
     /**
      * Determine whether the user can create models.
      *
@@ -42,21 +18,35 @@ class PublicationPolicy
      */
     public function create(User $user)
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Publication  $publication
+     * @param \App\Models\User $user
+     * @param int $publicationId
      * @return mixed
      */
-    public function update(User $user, Publication $publication)
+    public function update(User $user, int $publicationId)
     {
-        return ($user->id == $publication->created_by)
-            ? Response::allow()
-            : Response::deny('You do not own this post.');
+        $publication = $this->findModel($publicationId);
+
+        return $this->isCreatedBy($user, $publication);
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param \App\Models\User $user
+     * @param int $publicationId
+     * @return mixed
+     */
+    public function edit(User $user, int $publicationId)
+    {
+        $publication = $this->findModel($publicationId);
+
+        return $this->isCreatedBy($user, $publication);
     }
 
     /**
@@ -66,32 +56,34 @@ class PublicationPolicy
      * @param  \App\Models\Publication  $publication
      * @return mixed
      */
-    public function delete(User $user, Publication $publication)
+    public function delete(User $user, int $publicationId)
     {
-        //
+        $publication = $this->findModel($publicationId);
+
+        return $this->isCreatedBy($user, $publication);
     }
 
     /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Publication  $publication
-     * @return mixed
+     * @param int $id
+     * @return Publication
      */
-    public function restore(User $user, Publication $publication)
+    protected function findModel(int $id): Publication
     {
-        //
+        $model = Publication::query()
+            ->find($id)
+            ->where('id', $id)
+            ->first();
+
+        if ($model === null) {
+            throw new NotFoundHttpException('model not found');
+        }
+
+        return $model;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Publication  $publication
-     * @return mixed
-     */
-    public function forceDelete(User $user, Publication $publication)
+    public function isCreatedBy(User $user, Publication $publication)
     {
-        //
+        return (($user->id === $publication->created_by) && $user->isAdmin());
     }
+
 }

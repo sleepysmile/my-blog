@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Interfaces\ImageContract;
 use App\Managers\ResizeManager;
+use App\Traits\ByUserIdScopeTrait;
 use App\Traits\CommentTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use DateTime;
@@ -44,6 +45,7 @@ class Publication extends Model implements ImageContract
     use HasFactory;
     use CommentTrait;
     use QueryCacheable;
+    use ByUserIdScopeTrait;
 
     // CACHE CONFIGURE
     public $cacheFor = 3600 * 60;

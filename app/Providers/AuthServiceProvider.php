@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Publication;
-use App\Models\User;
 use App\Policies\PublicationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -28,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-
+        Gate::define('edit-publication', 'App\Policies\PublicationPolicy@edit');
+        Gate::define('update-publication', 'App\Policies\PublicationPolicy@update');
+        Gate::define('delete-publication', 'App\Policies\PublicationPolicy@delete');
     }
 }

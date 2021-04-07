@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
  * @package App\Models
  *
  * @property int $id
+ * @property int $role
  * @property string $name
  * @property string $email
  * @property string $email_verified_at
@@ -25,6 +26,10 @@ use Illuminate\Support\Facades\Hash;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    public const ROLE_ADMIN = 0;
+
+    public const ROLE_USER = 1;
 
     protected $primaryKey = 'id';
 
@@ -75,6 +80,22 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return ($this->role === self::ROLE_ADMIN);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        return ($this->role === self::ROLE_USER);
     }
 
 }
