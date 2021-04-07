@@ -58,7 +58,7 @@ class HomeController extends Controller
             ->paginate(12);
         $tag = Tags::query()
             ->where('slug', $slug)
-            ->first();
+            ->firstOrFail();
 
         return view('frontend.home.tag', [
             'publications' => $publications,
