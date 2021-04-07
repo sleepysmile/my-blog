@@ -86,7 +86,7 @@ class HomeController extends Controller
                         ->cacheTags(['comments:publication']);
                 },
             ])
-            ->first();
+            ->firstOrFail();
 
         return view('frontend.home.view', [
             'publication' => $publication
