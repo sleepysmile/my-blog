@@ -43,12 +43,14 @@ class Init extends Command
         $admin->name = 'Webmaster';
         $admin->email = 'webmaster@example.ru';
         $admin->email_verified_at = date('U');
+        $admin->role = User::ROLE_ADMIN;
         $admin->password ='webmaster';
 
         $user = new User();
         $user->name = 'User';
         $user->email = 'User@example.ru';
         $user->email_verified_at = date('U');
+        $user->role = User::ROLE_USER;
         $user->password ='user';
 
         return $admin->save() && $user->save();
